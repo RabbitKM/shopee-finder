@@ -1,0 +1,104 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, "Segoe UI", sans-serif;
+  font-size: 14px;
+  width: 380px;
+  padding: 16px;
+  background: #fff;
+  color: #222;
+}
+
+h1 { font-size: 17px; margin-bottom: 4px; }
+
+.hint { color: #666; font-size: 12px; margin-bottom: 10px; }
+
+textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  resize: vertical;
+  font-size: 13px;
+  font-family: inherit;
+}
+
+.btn-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+button {
+  flex: 1;
+  padding: 9px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+#searchBtn { background: #ee4d2d; color: #fff; }
+#searchBtn:hover    { background: #d93f20; }
+#searchBtn:disabled { background: #aaa; cursor: not-allowed; }
+
+#clearBtn { background: #f0f0f0; color: #555; flex: 0 0 60px; }
+#clearBtn:hover { background: #e0e0e0; }
+
+#status {
+  margin-top: 10px;
+  font-size: 13px;
+  min-height: 18px;
+}
+#status.error   { color: #c00; }
+#status.success { color: #080; }
+#status.loading { color: #888; }
+
+#results { margin-top: 10px; display: flex; flex-direction: column; gap: 10px; }
+
+.shop-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.shop-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fff5f3;
+  padding: 8px 12px;
+  border-bottom: 1px solid #e0e0e0;
+}
+.shop-name  { font-weight: bold; font-size: 13px; }
+.shop-link  { font-size: 12px; color: #ee4d2d; text-decoration: none; }
+.shop-link:hover { text-decoration: underline; }
+
+.item-row {
+  padding: 8px 12px;
+  border-bottom: 1px solid #f0f0f0;
+}
+.item-row:last-child { border-bottom: none; }
+
+.item-tag {
+  display: inline-block;
+  background: #eee;
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-size: 11px;
+  color: #555;
+  margin-bottom: 3px;
+}
+
+.item-name {
+  display: block;
+  color: #333;
+  text-decoration: none;
+  font-size: 13px;
+  line-height: 1.4;
+  margin-bottom: 3px;
+}
+.item-name:hover { color: #ee4d2d; text-decoration: underline; }
+
+.item-meta { font-size: 12px; color: #888; }

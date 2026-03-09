@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <title>蝦皮同賣場搜尋</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>🦐 蝦皮同賣場搜尋</h1>
+  <p class="hint">每行輸入一個關鍵字，找出同時販售所有商品的賣場</p>
+
+  <textarea id="keywords" rows="4" placeholder="mad 銅棒&#10;mad 手鑽&#10;（每行一個）"></textarea>
+
+  <div class="btn-row">
+    <button id="searchBtn">搜尋</button>
+    <button id="clearBtn" style="display:none">清除</button>
+  </div>
+
+  <div id="status"></div>
+  <div id="results"></div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

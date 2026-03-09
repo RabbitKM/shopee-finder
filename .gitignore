@@ -1,0 +1,9 @@
+# 登入 session（含個人 token，不上傳）
+shopee_session.json
+
+# Claude Code 設定
+.claude/
+
+# 系統檔
+.DS_Store
+Thumbs.db
