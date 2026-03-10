@@ -15,6 +15,18 @@
 
 ---
 
+## Demo
+
+| 初始畫面 | 輸入關鍵字 | 搜尋中 |
+|:---:|:---:|:---:|
+| ![初始畫面](docs/screenshots/01_input_placeholder.png) | ![輸入關鍵字](docs/screenshots/02_input_filled.png) | ![搜尋中](docs/screenshots/03_searching.png) |
+
+| 搜尋結果 | 找不到賣場 |
+|:---:|:---:|
+| ![搜尋結果](docs/screenshots/04_result.png) | ![找不到賣場](docs/screenshots/05_no_result.png) |
+
+---
+
 ## 安裝方式
 
 1. 下載或 clone 此專案
