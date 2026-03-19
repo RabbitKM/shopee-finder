@@ -2,6 +2,8 @@
 // 策略：導航到蝦皮搜尋頁，讓蝦皮自己的 JS 發 API request（帶正確的 token），
 // interceptor.js 攔截回應存入 window.__searchCache__，我們再讀取。
 
+chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true });
+
 const LIMIT = 20;
 const LOAD_WAIT_MS = 5000; // 等待頁面 JS 發完 API request 的時間
 
