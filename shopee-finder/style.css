@@ -17,7 +17,15 @@ h1 { font-size: 17px; margin-bottom: 4px; }
 
 .keyword-row { display: flex; gap: 6px; align-items: center; }
 
-.keyword-row input {
+.keyword-row input[type="checkbox"] {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: #ee4d2d;
+}
+
+.keyword-row input[type="text"] {
   flex: 1;
   border: 1px solid #ddd;
   border-radius: 6px;
@@ -25,7 +33,9 @@ h1 { font-size: 17px; margin-bottom: 4px; }
   font: inherit;
   font-size: 13px;
 }
-.keyword-row input:focus { outline: none; border-color: #ee4d2d; }
+.keyword-row input[type="text"]:focus { outline: none; border-color: #ee4d2d; }
+
+.keyword-row.unchecked input[type="text"] { color: #bbb; }
 
 .remove-btn {
   flex: none;

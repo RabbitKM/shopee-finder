@@ -13,10 +13,26 @@ function updateRemoveButtons() {
   btns.forEach(b => { b.style.display = hide ? "none" : ""; });
 }
 
-function addKeywordRow(value = "") {
+function bindCheckbox(cb, row) {
+  cb.addEventListener("change", () => {
+    row.classList.toggle("unchecked", !cb.checked);
+  });
+}
+
+function addKeywordRow(value = "", checked = true) {
   const row = document.createElement("div");
   row.className = "keyword-row";
-  row.innerHTML = `<input type="text" placeholder="輸入關鍵字">`;
+  if (!checked) row.classList.add("unchecked");
+
+  const cb = document.createElement("input");
+  cb.type = "checkbox";
+  cb.checked = checked;
+  bindCheckbox(cb, row);
+
+  const input = document.createElement("input");
+  input.type = "text";
+  input.placeholder = "輸入關鍵字";
+  if (value) input.value = value;
 
   const removeBtn = document.createElement("button");
   removeBtn.className = "remove-btn";
@@ -27,35 +43,43 @@ function addKeywordRow(value = "") {
     updateRemoveButtons();
   });
 
+  row.appendChild(cb);
+  row.appendChild(input);
   row.appendChild(removeBtn);
-  if (value) row.querySelector("input").value = value;
   keywordList.appendChild(row);
 }
 
 addBtn.addEventListener("click", () => {
   addKeywordRow();
   updateRemoveButtons();
-  keywordList.lastElementChild.querySelector("input").focus();
+  keywordList.lastElementChild.querySelector("input[type=text]").focus();
 });
 
-// 初始化：綁定預設兩列的刪除按鈕
-keywordList.querySelectorAll(".remove-btn").forEach(btn => {
-  btn.addEventListener("click", () => {
-    btn.closest(".keyword-row").remove();
+// 初始化：綁定預設兩列的刪除按鈕與 checkbox
+keywordList.querySelectorAll(".keyword-row").forEach(row => {
+  const cb = row.querySelector("input[type=checkbox]");
+  if (cb) bindCheckbox(cb, row);
+
+  row.querySelector(".remove-btn").addEventListener("click", () => {
+    row.remove();
     updateRemoveButtons();
   });
 });
 updateRemoveButtons();
 
 // ── 開啟時還原上次的搜尋結果 ──
-chrome.storage.local.get(["lastResult", "lastKeywords"], ({ lastResult, lastKeywords }) => {
-  if (lastKeywords?.length) {
-    const inputs = keywordList.querySelectorAll("input");
-    lastKeywords.forEach((kw, i) => {
-      if (inputs[i]) {
-        inputs[i].value = kw;
+chrome.storage.local.get(["lastResult", "lastRows", "lastKeywords"], ({ lastResult, lastRows, lastKeywords }) => {
+  const rows = lastRows ?? lastKeywords?.map(kw => ({ kw, checked: true }));
+  if (rows?.length) {
+    const existingRows = keywordList.querySelectorAll(".keyword-row");
+    rows.forEach(({ kw, checked }, i) => {
+      if (existingRows[i]) {
+        existingRows[i].querySelector("input[type=text]").value = kw;
+        const cb = existingRows[i].querySelector("input[type=checkbox]");
+        cb.checked = checked;
+        existingRows[i].classList.toggle("unchecked", !checked);
       } else {
-        addKeywordRow(kw);
+        addKeywordRow(kw, checked);
       }
     });
     updateRemoveButtons();
@@ -65,11 +89,13 @@ chrome.storage.local.get(["lastResult", "lastKeywords"], ({ lastResult, lastKeyw
 
 // ── 搜尋 ──
 btn.addEventListener("click", async () => {
-  const keywords = Array.from(keywordList.querySelectorAll("input"))
-    .map(i => i.value.trim()).filter(Boolean);
+  const keywords = Array.from(keywordList.querySelectorAll(".keyword-row"))
+    .filter(row => row.querySelector("input[type=checkbox]").checked)
+    .map(row => row.querySelector("input[type=text]").value.trim())
+    .filter(Boolean);
 
   if (keywords.length < 2) {
-    setStatus("請輸入至少 2 個關鍵字", "error");
+    setStatus("請至少勾選 2 個關鍵字", "error");
     return;
   }
 
@@ -87,21 +113,32 @@ btn.addEventListener("click", async () => {
       return;
     }
 
-    chrome.storage.local.set({ lastResult: resp.result, lastKeywords: keywords });
+    // 儲存所有列（含未勾選）的狀態
+    const allRows = Array.from(keywordList.querySelectorAll(".keyword-row")).map(row => ({
+      kw: row.querySelector("input[type=text]").value.trim(),
+      checked: row.querySelector("input[type=checkbox]").checked,
+    }));
+    chrome.storage.local.set({ lastResult: resp.result, lastRows: allRows });
     renderResults(resp.result);
   });
 });
 
 // ── 清除 ──
 clearBtn.addEventListener("click", () => {
-  chrome.storage.local.remove(["lastResult", "lastKeywords"]);
+  chrome.storage.local.remove(["lastResult", "lastRows", "lastKeywords"]);
   resultsEl.innerHTML = "";
 
-  // 清空輸入值，多餘的列刪回剩 2 列
+  // 清空輸入值，多餘的列刪回剩 2 列，checkbox 全部重設為 checked
   const rows = keywordList.querySelectorAll(".keyword-row");
   rows.forEach((row, i) => {
-    if (i < 2) row.querySelector("input").value = "";
-    else row.remove();
+    if (i < 2) {
+      row.querySelector("input[type=text]").value = "";
+      const cb = row.querySelector("input[type=checkbox]");
+      cb.checked = true;
+      row.classList.remove("unchecked");
+    } else {
+      row.remove();
+    }
   });
   updateRemoveButtons();
 
