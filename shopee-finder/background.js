@@ -5,7 +5,6 @@
 chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true });
 
 const LIMIT = 20;
-const LOAD_WAIT_MS = 5000; // 等待頁面 JS 發完 API request 的時間
 
 function delay(ms) {
   return new Promise((r) => setTimeout(r, ms));
@@ -38,19 +37,20 @@ async function searchShopee(tabId, keyword) {
   // 導航到搜尋頁，讓蝦皮自己觸發 API call
   await chrome.tabs.update(tabId, { url: searchUrl });
   await waitForTabLoad(tabId);
-  await delay(LOAD_WAIT_MS); // 等蝦皮 JS 執行完 API request
 
-  // 讀取 interceptor.js 存下的結果
-  const results = await chrome.scripting.executeScript({
-    target: { tabId },
-    func: (kw) => window.__searchCache__?.[kw] ?? null,
-    args: [keyword],
-    world: "MAIN",
-  });
+  // 輪詢等待 interceptor 攔截到資料，每 500ms 檢查一次，最多等 15 秒
+  for (let i = 0; i < 30; i++) {
+    await delay(500);
+    const results = await chrome.scripting.executeScript({
+      target: { tabId },
+      func: (kw) => window.__searchCache__?.[kw] ?? null,
+      args: [keyword],
+      world: "MAIN",
+    });
+    if (results[0].result) return results[0].result;
+  }
 
-  const items = results[0].result;
-  if (!items) throw new Error(`搜尋「${keyword}」未攔截到資料（頁面可能尚未載入）`);
-  return items;
+  throw new Error(`搜尋「${keyword}」未攔截到資料（頁面可能尚未載入）`);
 }
 
 function parseItem(item) {
@@ -73,15 +73,23 @@ async function findCommonShops(keywords) {
   const tabId = await getOrCreateShopeeTab();
   const allResults = {};
 
-  for (const kw of keywords) {
-    const rawItems = await searchShopee(tabId, kw);
-    const shopMap = {};
-    for (const raw of rawItems) {
-      const item = parseItem(raw);
-      if (!item.shopId) continue;
-      (shopMap[item.shopId] ??= []).push(item);
+  // 記錄使用者目前的分頁，搜尋完再切回
+  const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  await chrome.tabs.update(tabId, { active: true });
+
+  try {
+    for (const kw of keywords) {
+      const rawItems = await searchShopee(tabId, kw);
+      const shopMap = {};
+      for (const raw of rawItems) {
+        const item = parseItem(raw);
+        if (!item.shopId) continue;
+        (shopMap[item.shopId] ??= []).push(item);
+      }
+      allResults[kw] = shopMap;
     }
-    allResults[kw] = shopMap;
+  } finally {
+    if (activeTab) await chrome.tabs.update(activeTab.id, { active: true });
   }
 
   // 取交集
