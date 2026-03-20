@@ -2,7 +2,7 @@
 
 輸入多個關鍵字，自動找出**同時販售所有指定商品**的蝦皮賣場。
 
-![版本](https://img.shields.io/badge/version-1.0-orange)
+![版本](https://img.shields.io/badge/version-1.4-orange)
 ![平台](https://img.shields.io/badge/platform-Chrome%20%2F%20Edge-blue)
 
 ---
@@ -17,13 +17,11 @@
 
 ## Demo
 
-| 初始畫面 | 輸入關鍵字 | 搜尋中 |
+| 輸入關鍵字 | 搜尋結果 | 勾選調整後結果 |
 |:---:|:---:|:---:|
-| ![初始畫面](docs/screenshots/01_input_placeholder.png) | ![輸入關鍵字](docs/screenshots/02_input_filled.png) | ![搜尋中](docs/screenshots/03_searching.png) |
+| ![輸入關鍵字](docs/screenshots/01_input.png) | ![搜尋結果](docs/screenshots/02_result1.png) | ![勾選調整後結果](docs/screenshots/03_result2.png) |
 
-| 搜尋結果 | 找不到賣場 |
-|:---:|:---:|
-| ![搜尋結果](docs/screenshots/04_result.png) | ![找不到賣場](docs/screenshots/05_no_result.png) |
+> 第三張：取消勾選「Oral-B 牙膏」後重新搜尋，結果從 1 間擴展為 2 間賣場
 
 ---
 
@@ -43,9 +41,11 @@
 
 1. 在 Chrome 登入 [shopee.tw](https://shopee.tw)
 2. 點擊工具列的 🦐 圖示開啟搜尋面板
-3. 每行輸入一個關鍵字（至少 2 個）
-4. 按「搜尋」，等待結果（每個關鍵字約 5 秒）
-5. 點擊商品或賣場連結可直接前往，**關閉面板後結果仍會保留**
+3. 預設提供兩個關鍵字輸入框，可按「＋ 新增關鍵字」增加更多
+4. 有 3 個以上關鍵字時，可透過左側勾選框暫時停用某個關鍵字，不需刪除
+5. 按「搜尋」，等待結果
+6. 結果依賣場顯示，包含各商品價格、評分、已售數量、到貨時間，以及**合購估價**
+7. 點擊商品或賣場連結可直接前往，**關閉面板後結果仍會保留**
 
 ---
 
@@ -85,6 +85,8 @@ shopee-finder/
 
 ## 後續計畫
 
-- [ ] 賣場價格合計顯示（含免運門檻判斷）
-- [ ] 搜尋結果依總價排序
-- [ ] 開啟商品頁面時保留搜尋結果，不中斷比較流程
+- [x] 賣場合購估價顯示（最低 / 最高合計）
+- [x] 到貨時間顯示
+- [x] 關鍵字勾選，暫時停用而不刪除
+- [ ] 賣場免運門檻顯示
+- [ ] 搜尋結果依合購估價排序

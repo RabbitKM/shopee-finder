@@ -13,6 +13,20 @@ function updateRemoveButtons() {
   btns.forEach(b => { b.style.display = hide ? "none" : ""; });
 }
 
+function updateCheckboxes() {
+  const rows = keywordList.querySelectorAll(".keyword-row");
+  const hide = rows.length <= 2;
+  rows.forEach(row => {
+    const cb = row.querySelector("input[type=checkbox]");
+    cb.style.display = hide ? "none" : "";
+    // 回到 2 列時，強制恢復勾選避免搜尋出錯
+    if (hide && !cb.checked) {
+      cb.checked = true;
+      row.classList.remove("unchecked");
+    }
+  });
+}
+
 function bindCheckbox(cb, row) {
   cb.addEventListener("change", () => {
     row.classList.toggle("unchecked", !cb.checked);
@@ -41,6 +55,7 @@ function addKeywordRow(value = "", checked = true) {
   removeBtn.addEventListener("click", () => {
     row.remove();
     updateRemoveButtons();
+    updateCheckboxes();
   });
 
   row.appendChild(cb);
@@ -52,6 +67,7 @@ function addKeywordRow(value = "", checked = true) {
 addBtn.addEventListener("click", () => {
   addKeywordRow();
   updateRemoveButtons();
+  updateCheckboxes();
   keywordList.lastElementChild.querySelector("input[type=text]").focus();
 });
 
@@ -63,9 +79,11 @@ keywordList.querySelectorAll(".keyword-row").forEach(row => {
   row.querySelector(".remove-btn").addEventListener("click", () => {
     row.remove();
     updateRemoveButtons();
+    updateCheckboxes();
   });
 });
 updateRemoveButtons();
+updateCheckboxes();
 
 // ── 開啟時還原上次的搜尋結果 ──
 chrome.storage.local.get(["lastResult", "lastRows", "lastKeywords"], ({ lastResult, lastRows, lastKeywords }) => {
@@ -83,6 +101,7 @@ chrome.storage.local.get(["lastResult", "lastRows", "lastKeywords"], ({ lastResu
       }
     });
     updateRemoveButtons();
+    updateCheckboxes();
   }
   if (lastResult) renderResults(lastResult);
 });
@@ -141,6 +160,7 @@ clearBtn.addEventListener("click", () => {
     }
   });
   updateRemoveButtons();
+  updateCheckboxes();
 
   setStatus("", "");
   clearBtn.style.display = "none";
