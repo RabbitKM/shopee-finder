@@ -66,6 +66,7 @@ function parseItem(item) {
     sold:     b.historical_sold ?? 0,
     rating:   Math.round((b.item_rating?.rating_star ?? 0) * 10) / 10,
     url:      `https://shopee.tw/product/${b.shopid}/${b.itemid}`,
+    delivery: b.estimated_delivery_time?.estimated_delivery_time_text ?? "",
   };
 }
 

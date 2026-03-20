@@ -139,6 +139,22 @@ function renderResults({ shops, keywords }) {
     `;
     card.appendChild(header);
 
+    // 計算買齊估價
+    let minTotal = 0, maxTotal = 0;
+    for (const kw of keywords) {
+      const kwItems = shop.items[kw] ?? [];
+      if (kwItems.length === 0) continue;
+      minTotal += Math.min(...kwItems.map(i => i.priceMin));
+      maxTotal += Math.max(...kwItems.map(i => i.priceMax));
+    }
+    const totalEl = document.createElement("div");
+    totalEl.className = "shop-total";
+    const totalStr = minTotal === maxTotal
+      ? `NT$${minTotal.toFixed(0)}`
+      : `<span class="total-min">最低 NT$${minTotal.toFixed(0)}</span> <span class="total-sep">/</span> <span class="total-max">最高 NT$${maxTotal.toFixed(0)}</span>`;
+    totalEl.innerHTML = `<span class="total-label">合購估價：</span><span class="total-range">${totalStr}</span>`;
+    card.appendChild(totalEl);
+
     for (const kw of keywords) {
       for (const item of shop.items[kw] ?? []) {
         const priceStr =
@@ -151,7 +167,7 @@ function renderResults({ shops, keywords }) {
         row.innerHTML = `
           <div class="item-tag">${kw}</div>
           <a href="${item.url}" target="_blank" class="item-name">${item.name}</a>
-          <div class="item-meta">${priceStr} ／ ⭐ ${item.rating} ／ 已售 ${item.sold}</div>
+          <div class="item-meta">${priceStr} ／ ⭐ ${item.rating} ／ 已售 ${item.sold}${item.delivery ? ` ／ 🚚 ${item.delivery}` : ""}</div>
         `;
         card.appendChild(row);
       }
