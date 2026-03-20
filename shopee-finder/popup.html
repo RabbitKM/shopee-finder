@@ -7,9 +7,19 @@
 </head>
 <body>
   <h1>🦐 蝦皮同賣場搜尋</h1>
-  <p class="hint">每行輸入一個關鍵字，找出同時販售所有商品的賣場</p>
+  <p class="hint">找出同時販售所有商品的賣場</p>
 
-  <textarea id="keywords" rows="4" placeholder="Oral-B 替換刷頭&#10;Oral-B 牙膏&#10;（每行一個）"></textarea>
+  <div id="keyword-list">
+    <div class="keyword-row">
+      <input type="text" placeholder="關鍵字，例如：Oral-B 替換刷頭">
+      <button class="remove-btn" title="移除">✕</button>
+    </div>
+    <div class="keyword-row">
+      <input type="text" placeholder="關鍵字，例如：Oral-B 牙膏">
+      <button class="remove-btn" title="移除">✕</button>
+    </div>
+  </div>
+  <button id="addBtn">＋ 新增關鍵字</button>
 
   <div class="btn-row">
     <button id="searchBtn">搜尋</button>

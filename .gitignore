@@ -3,6 +3,7 @@ shopee_session.json
 
 # Claude Code 設定
 .claude/
+CLAUDE.md
 
 # 系統檔
 .DS_Store

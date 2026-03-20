@@ -13,15 +13,48 @@ h1 { font-size: 17px; margin-bottom: 4px; }
 
 .hint { color: #666; font-size: 12px; margin-bottom: 10px; }
 
-textarea {
-  width: 100%;
-  padding: 8px;
+#keyword-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 6px; }
+
+.keyword-row { display: flex; gap: 6px; align-items: center; }
+
+.keyword-row input {
+  flex: 1;
   border: 1px solid #ddd;
   border-radius: 6px;
-  resize: vertical;
+  padding: 8px;
+  font: inherit;
   font-size: 13px;
-  font-family: inherit;
 }
+.keyword-row input:focus { outline: none; border-color: #ee4d2d; }
+
+.remove-btn {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 50%;
+  background: #eee;
+  color: #666;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 1;
+}
+.remove-btn:hover { background: #fdd; color: #c00; }
+
+#addBtn {
+  width: 100%;
+  padding: 7px;
+  border: 1px dashed #ccc;
+  border-radius: 6px;
+  background: white;
+  color: #888;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: normal;
+  margin-bottom: 2px;
+}
+#addBtn:hover { border-color: #ee4d2d; color: #ee4d2d; }
 
 .btn-row {
   display: flex;

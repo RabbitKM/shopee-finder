@@ -1,28 +1,79 @@
 const btn       = document.getElementById("searchBtn");
 const clearBtn  = document.getElementById("clearBtn");
+const addBtn    = document.getElementById("addBtn");
 const statusEl  = document.getElementById("status");
 const resultsEl = document.getElementById("results");
+const keywordList = document.getElementById("keyword-list");
 
-// ── 開啟 popup 時，還原上次的搜尋結果 ──
-chrome.storage.local.get(["lastResult", "lastKeywords"], ({ lastResult, lastKeywords }) => {
-  if (lastResult) {
-    if (lastKeywords) {
-      document.getElementById("keywords").value = lastKeywords.join("\n");
-    }
-    renderResults(lastResult);
-  }
+// ── 關鍵字列管理 ──
+
+function updateRemoveButtons() {
+  const btns = keywordList.querySelectorAll(".remove-btn");
+  const hide = btns.length <= 2;
+  btns.forEach(b => { b.style.display = hide ? "none" : ""; });
+}
+
+function addKeywordRow(value = "") {
+  const row = document.createElement("div");
+  row.className = "keyword-row";
+  row.innerHTML = `<input type="text" placeholder="輸入關鍵字">`;
+
+  const removeBtn = document.createElement("button");
+  removeBtn.className = "remove-btn";
+  removeBtn.title = "移除";
+  removeBtn.textContent = "✕";
+  removeBtn.addEventListener("click", () => {
+    row.remove();
+    updateRemoveButtons();
+  });
+
+  row.appendChild(removeBtn);
+  if (value) row.querySelector("input").value = value;
+  keywordList.appendChild(row);
+}
+
+addBtn.addEventListener("click", () => {
+  addKeywordRow();
+  updateRemoveButtons();
+  keywordList.lastElementChild.querySelector("input").focus();
 });
 
+// 初始化：綁定預設兩列的刪除按鈕
+keywordList.querySelectorAll(".remove-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    btn.closest(".keyword-row").remove();
+    updateRemoveButtons();
+  });
+});
+updateRemoveButtons();
+
+// ── 開啟時還原上次的搜尋結果 ──
+chrome.storage.local.get(["lastResult", "lastKeywords"], ({ lastResult, lastKeywords }) => {
+  if (lastKeywords?.length) {
+    const inputs = keywordList.querySelectorAll("input");
+    lastKeywords.forEach((kw, i) => {
+      if (inputs[i]) {
+        inputs[i].value = kw;
+      } else {
+        addKeywordRow(kw);
+      }
+    });
+    updateRemoveButtons();
+  }
+  if (lastResult) renderResults(lastResult);
+});
+
+// ── 搜尋 ──
 btn.addEventListener("click", async () => {
-  const raw = document.getElementById("keywords").value;
-  const keywords = raw.split("\n").map((s) => s.trim()).filter(Boolean);
+  const keywords = Array.from(keywordList.querySelectorAll("input"))
+    .map(i => i.value.trim()).filter(Boolean);
 
   if (keywords.length < 2) {
     setStatus("請輸入至少 2 個關鍵字", "error");
     return;
   }
 
-  setStatus("搜尋中，請稍候…（每個關鍵字約需 5 秒）", "loading");
+  setStatus("搜尋中，請稍候…", "loading");
   btn.disabled = true;
   clearBtn.style.display = "none";
   resultsEl.innerHTML = "";
@@ -36,20 +87,29 @@ btn.addEventListener("click", async () => {
       return;
     }
 
-    // 儲存結果，讓下次開啟 popup 時自動還原
     chrome.storage.local.set({ lastResult: resp.result, lastKeywords: keywords });
     renderResults(resp.result);
   });
 });
 
+// ── 清除 ──
 clearBtn.addEventListener("click", () => {
   chrome.storage.local.remove(["lastResult", "lastKeywords"]);
   resultsEl.innerHTML = "";
-  document.getElementById("keywords").value = "";
+
+  // 清空輸入值，多餘的列刪回剩 2 列
+  const rows = keywordList.querySelectorAll(".keyword-row");
+  rows.forEach((row, i) => {
+    if (i < 2) row.querySelector("input").value = "";
+    else row.remove();
+  });
+  updateRemoveButtons();
+
   setStatus("", "");
   clearBtn.style.display = "none";
 });
 
+// ── 工具函式 ──
 function setStatus(msg, type = "") {
   statusEl.textContent = msg;
   statusEl.className = type;
