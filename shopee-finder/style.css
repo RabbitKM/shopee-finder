@@ -12,6 +12,7 @@ body {
 h1 { font-size: 17px; margin-bottom: 4px; }
 
 .hint { color: #666; font-size: 12px; margin-bottom: 10px; }
+.result-hint { color: #aaa; font-size: 11px; margin: 0 0 2px; padding: 0; }
 
 #keyword-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 6px; }
 
@@ -91,6 +92,7 @@ button {
 
 #status {
   margin-top: 10px;
+  margin-bottom: 0;
   font-size: 13px;
   min-height: 18px;
 }
@@ -98,7 +100,7 @@ button {
 #status.success { color: #080; }
 #status.loading { color: #888; }
 
-#results { margin-top: 10px; display: flex; flex-direction: column; gap: 10px; }
+#results { margin-top: 2px; display: flex; flex-direction: column; gap: 10px; }
 
 .shop-card {
   border: 1px solid #e0e0e0;
@@ -131,6 +133,18 @@ button {
   border-bottom: 1px solid #e0e0e0;
 }
 .shop-name  { font-weight: bold; font-size: 13px; }
+.shop-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: bold;
+  padding: 1px 6px;
+  border-radius: 3px;
+  color: #fff;
+  vertical-align: middle;
+  margin-left: 4px;
+}
+.badge-mall      { background: #d0011b; }
+.badge-preferred { background: #f57224; }
 .shop-link  { font-size: 12px; color: #ee4d2d; text-decoration: none; }
 .shop-link:hover { text-decoration: underline; }
 

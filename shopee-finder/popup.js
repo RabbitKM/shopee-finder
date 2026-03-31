@@ -182,6 +182,10 @@ function renderResults({ shops, keywords }) {
   }
 
   setStatus(`✅ 找到 ${shops.length} 間賣場`, "success");
+  const hint = document.createElement("p");
+  hint.className = "result-hint";
+  hint.textContent = "ℹ 以下商品為蝦皮搜尋結果，僅供參考 (商品名稱可能與關鍵字不同)";
+  resultsEl.appendChild(hint);
   clearBtn.style.display = "";
 
   shops.sort((a, b) => {
@@ -198,8 +202,12 @@ function renderResults({ shops, keywords }) {
 
     const header = document.createElement("div");
     header.className = "shop-header";
+    const badgeClass = shop.shopType.includes("商城") ? "shop-badge badge-mall" : "shop-badge badge-preferred";
+    const badgeHtml = shop.shopType
+      ? ` <span class="${badgeClass}">${shop.shopType}</span>`
+      : "";
     header.innerHTML = `
-      <span class="shop-name">🏪 ${shop.shopName}</span>
+      <span class="shop-name">🏪 ${shop.shopName}${badgeHtml}</span>
       <a href="https://shopee.tw/shop/${shop.shopId}/" target="_blank" class="shop-link">賣場頁面 ↗</a>
     `;
     card.appendChild(header);

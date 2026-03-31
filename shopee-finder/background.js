@@ -4,8 +4,6 @@
 
 chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true });
 
-const LIMIT = 20;
-
 function delay(ms) {
   return new Promise((r) => setTimeout(r, ms));
 }
@@ -67,6 +65,12 @@ function parseItem(item) {
     rating:   Math.round((b.item_rating?.rating_star ?? 0) * 10) / 10,
     url:      `https://shopee.tw/product/${b.shopid}/${b.itemid}`,
     delivery: b.estimated_delivery_time?.estimated_delivery_time_text ?? "",
+    shopType: (() => {
+      if (b.show_official_shop_label === true)
+        return (b.shop_name ?? "").includes("旗艦") ? "商城旗艦店" : "商城";
+      if (b.show_shopee_verified_label === true) return "蝦皮優選";
+      return "";
+    })(),
   };
 }
 
@@ -101,11 +105,12 @@ async function findCommonShops(keywords) {
   for (const sid of common) {
     const firstKw = keywords[0];
     const shopName = allResults[firstKw][sid][0].shopName;
+    const shopType = allResults[firstKw][sid][0].shopType ?? "";
     const items = {};
     for (const kw of keywords) {
       items[kw] = allResults[kw][sid] ?? [];
     }
-    shops.push({ shopId: sid, shopName, items });
+    shops.push({ shopId: sid, shopName, shopType, items });
   }
 
   return { shops, keywords };
