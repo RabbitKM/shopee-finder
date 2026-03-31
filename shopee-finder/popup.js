@@ -184,6 +184,14 @@ function renderResults({ shops, keywords }) {
   setStatus(`✅ 找到 ${shops.length} 間賣場`, "success");
   clearBtn.style.display = "";
 
+  shops.sort((a, b) => {
+    const minFor = (shop) => keywords.reduce((sum, kw) => {
+      const kwItems = shop.items[kw] ?? [];
+      return kwItems.length ? sum + Math.min(...kwItems.map(i => i.priceMin)) : sum;
+    }, 0);
+    return minFor(a) - minFor(b);
+  });
+
   for (const shop of shops) {
     const card = document.createElement("div");
     card.className = "shop-card";
