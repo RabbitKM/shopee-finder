@@ -63,6 +63,7 @@ function parseItem(item) {
     priceMax: (b.price_max ?? 0) / 100000,
     sold:     b.historical_sold ?? 0,
     rating:   Math.round((b.item_rating?.rating_star ?? 0) * 10) / 10,
+    rating1:  b.item_rating?.rating_count?.[1] ?? 0,
     url:      `https://shopee.tw/product/${b.shopid}/${b.itemid}`,
     delivery: b.estimated_delivery_time?.estimated_delivery_time_text ?? "",
     shopType: (() => {

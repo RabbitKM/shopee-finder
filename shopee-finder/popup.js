@@ -240,7 +240,7 @@ function renderResults({ shops, keywords }) {
         row.innerHTML = `
           <div class="item-tag">${kw}</div>
           <a href="${item.url}" target="_blank" class="item-name">${item.name}</a>
-          <div class="item-meta">${priceStr} ／ ⭐ ${item.rating} ／ 已售 ${item.sold}${item.delivery ? ` ／ 🚚 ${item.delivery}` : ""}</div>
+          <div class="item-meta">${priceStr} ／ ⭐ ${item.rating}${item.rating1 > 0 ? ` (1★×${item.rating1})` : ""} ／ 已售 ${item.sold}${item.delivery ? ` ／ 🚚 ${item.delivery}` : ""}</div>
         `;
         card.appendChild(row);
       }

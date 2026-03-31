@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "蝦皮同賣場搜尋",
-  "version": "1.6",
+  "version": "1.7",
   "description": "找出同時販售多個指定商品的蝦皮賣場",
   "permissions": ["storage", "tabs", "scripting", "sidePanel"],
   "host_permissions": ["https://shopee.tw/*"],
